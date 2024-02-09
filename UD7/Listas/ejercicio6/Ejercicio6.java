@@ -1,6 +1,7 @@
 package ejercicio6;
 
 public interface Ejercicio6 {
+	
   void insert(Object x); //Inserta x 
   void remove(Object x ); //Elimina el primer x
   void removeCurrent();  //Elimina el elemento current
