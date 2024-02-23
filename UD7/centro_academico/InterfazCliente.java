@@ -1,9 +1,10 @@
 package centro_academico;
 
+
 public interface InterfazCliente {
   public boolean crearAlumno(String expediente, String nombre);
 
-  public boolean crearAsignatura(String codigo, String nombre, String creditos);
+  public boolean crearAsignatura(String codigo, String nombre, int creditos);
 
   public boolean matricular(String expediente, String codigo);
 

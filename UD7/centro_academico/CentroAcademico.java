@@ -1,5 +1,6 @@
 package centro_academico;
 
+
 import java.util.*;
 
 public class CentroAcademico implements InterfazCliente {
@@ -34,7 +35,7 @@ public class CentroAcademico implements InterfazCliente {
     return -1;
   }
 
-  public boolean crearAsignatura(String codigo,String nombre,String creditos) {
+  public boolean crearAsignatura(String codigo,String nombre,int creditos) {
     if (buscarAsignatura(codigo) != -1) {
       return false;
     }
@@ -48,6 +49,7 @@ public class CentroAcademico implements InterfazCliente {
     if (idxAl == -1 || idxAs == -1) return false;
     if (alumnos.get(idxAl).estaMatriculado(asignaturas.get(idxAs))) return false;
     alumnos.get(idxAl).matricular(asignaturas.get(idxAs));
+    asignaturas.get(idxAs).matricular(alumnos.get(idxAl));
     return true;
   }
 
@@ -105,6 +107,10 @@ public class CentroAcademico implements InterfazCliente {
       System.out.println("La asignatura no existe");
       return;
     }
-    System.out.println(asignaturas.get(idx));
+    try {
+		System.out.println(asignaturas.get(idx).print());
+	} catch (AsignaturasException e) {
+		e.printStackTrace();
+	}
   }
 }

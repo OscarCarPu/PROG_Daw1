@@ -1,19 +1,27 @@
 package centro_academico;
 
+import java.util.*;
+
 public class Asignatura {
 
   private String codigo;
   private String nombre;
-  private String creditos;
+  private int creditos;
+  private Set<Alumno> alumnos;
 
-  public Asignatura(String codigo, String nombre, String creditos) {
+  public Asignatura(String codigo, String nombre, int creditos) {
     this.codigo = codigo;
     this.nombre = nombre;
     this.creditos = creditos;
+    alumnos = new HashSet<>();
   }
 
   public String getCodigo() {
     return codigo;
+  }
+
+  public void matricular(Alumno a){
+    alumnos.add(a);
   }
 
   @Override
@@ -28,8 +36,8 @@ public class Asignatura {
     return nombre;
   }
 
-  @Override
-  public String toString() {
+  public String print() throws AsignaturasException{
+	  if(alumnos.size()==0)throw new AsignaturasException();
     return (
       "Codigo: " + codigo + " Nombre: " + nombre + " Creditos: " + creditos
     );

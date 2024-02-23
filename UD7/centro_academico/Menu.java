@@ -1,9 +1,31 @@
 package centro_academico;
 
+
 import java.util.Scanner;
 
 public class Menu {
 
+	public static boolean validoDni(String a) {
+		if(!a.matches("\\d{8}[A-Z]")) {
+			return false;
+		}
+		int sum=0;
+		for(int i=0;i<8;i++) {
+			sum+=(Math.pow(10,(7-i)))*((int)a.charAt(i)-(int)('0'));
+		}
+		System.out.println(sum);
+		String order="TRWAGMYFPDXBNJZSQVHLCKE";
+		if(order.charAt(sum%23)!=a.charAt(8))return false;
+		
+		return true;
+	}
+	
+	public static String LRtrim(String a) {
+		a=a.replaceAll("^\\s+", "");
+		a=a.replaceAll("\\s+$", "");
+		return a;
+	}
+	
   public static void main(String[] args) {
     CentroAcademico centroAcademico = new CentroAcademico();
     Scanner in = new Scanner(System.in);
@@ -39,8 +61,16 @@ public class Menu {
         case 1:
           System.out.print("Ingrese expediente del alumno: ");
           String expedienteAlumno = in.nextLine();
+          expedienteAlumno=LRtrim(expedienteAlumno);
+          while(!validoDni(expedienteAlumno)){
+        	  System.out.println("Ingrese un expediente válido: ");
+        	  expedienteAlumno = in.nextLine();
+              expedienteAlumno=LRtrim(expedienteAlumno);
+
+          }
           System.out.print("Ingrese nombre del alumno: ");
           String nombreAlumno = in.nextLine();
+          nombreAlumno=LRtrim(nombreAlumno);
           boolean creado = centroAcademico.crearAlumno(
             expedienteAlumno,
             nombreAlumno
@@ -54,10 +84,27 @@ public class Menu {
         case 2:
           System.out.print("Ingrese código de la asignatura: ");
           String codigoAsignatura = in.nextLine();
+          codigoAsignatura=LRtrim(codigoAsignatura);
+          while(!codigoAsignatura.matches("A-\\d{3}")) {
+        	  System.out.println("Ingrese un código válido: ");
+        	  codigoAsignatura = in.nextLine();
+        	  codigoAsignatura=LRtrim(codigoAsignatura);
+          }
           System.out.print("Ingrese nombre de la asignatura: ");
           String nombreAsignatura = in.nextLine();
-          System.out.print("Ingrese número de créditos de la asignatura: ");
-          String creditosAsignatura = in.nextLine();
+          nombreAsignatura=LRtrim(nombreAsignatura);
+          int creditosAsignatura=0;
+          while (creditosAsignatura <= 0) {
+              System.out.println("Ingrese el número de créditos de la asignatura (debe ser un número entero mayor que 0):");
+              try {
+                  creditosAsignatura = Integer.parseInt(in.nextLine());
+              } catch (NumberFormatException e) {
+                  System.out.println("Error: Debe ingresar un número entero válido.");
+              }
+              if (creditosAsignatura <= 0) {
+                  System.out.println("Error: Debe ingresar un número de créditos mayor a 0.");
+              }
+          }
           boolean creadoAsignatura = centroAcademico.crearAsignatura(
             codigoAsignatura,
             nombreAsignatura,
@@ -72,8 +119,10 @@ public class Menu {
         case 3:
           System.out.print("Ingrese expediente del alumno: ");
           String expedienteMatricula = in.nextLine();
+          expedienteMatricula=LRtrim(expedienteMatricula);
           System.out.print("Ingrese código de la asignatura: ");
           String codigoMatricula = in.nextLine();
+          codigoMatricula=LRtrim(codigoMatricula);
           boolean matriculado = centroAcademico.matricular(
             expedienteMatricula,
             codigoMatricula
@@ -89,6 +138,7 @@ public class Menu {
         case 4:
           System.out.print("Ingrese expediente del alumno a imprimir: ");
           String expedienteImprimir = in.nextLine();
+          expedienteImprimir=LRtrim(expedienteImprimir);
           centroAcademico.imprimirAlumno(expedienteImprimir);
           break;
         case 5:
@@ -97,15 +147,28 @@ public class Menu {
         case 6:
           System.out.print("Ingrese código de la asignatura a imprimir: ");
           String codigoImprimir = in.nextLine();
+          codigoImprimir=LRtrim(codigoImprimir);
           centroAcademico.imprimirAsignatura(codigoImprimir);
           break;
         case 7:
           System.out.print("Ingrese expediente del alumno: ");
           String expedienteCalificacion = in.nextLine();
+          expedienteCalificacion=LRtrim(expedienteCalificacion);
           System.out.print("Ingrese código de la asignatura: ");
           String codigoCalificacion = in.nextLine();
-          System.out.print("Ingrese calificación: ");
-          double calificacion = in.nextDouble();
+          codigoCalificacion=LRtrim(codigoCalificacion);
+          double calificacion=0;
+          while (calificacion <= 0) {
+              System.out.println("Ingrese una calificación válida (>0): ");
+              try {
+                  calificacion = Double.parseDouble(in.nextLine());
+              } catch (NumberFormatException e) {
+                  System.out.println("Error: Debe ingresar un número válido.");
+              }
+              if (calificacion <= 0) {
+                  System.out.println("Error: Debe ingresar una calificación mayor a 0.");
+              }
+          }
           boolean agregada = centroAcademico.agregarCalificacion(
             expedienteCalificacion,
             codigoCalificacion,
@@ -122,8 +185,10 @@ public class Menu {
         case 8:
           System.out.print("Ingrese expediente del primer alumno: ");
           String expediente1 = in.nextLine();
+          expediente1=LRtrim(expediente1);
           System.out.print("Ingrese expediente del segundo alumno: ");
           String expediente2 = in.nextLine();
+          expediente2=LRtrim(expediente2);
           centroAcademico.compararAlumno(expediente1, expediente2);
           break;
         case 0:
