@@ -1,0 +1,7 @@
+Columnas: 1
+Filas: 4
+Array: 
+2.3 
+4.23 
+1.23 
+5.234 

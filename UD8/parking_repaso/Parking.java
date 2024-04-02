@@ -1,6 +1,5 @@
 package parking_repaso;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,7 +14,8 @@ import java.util.Map;
 public class Parking {
 
   private int numPlazas;
-  private String direccion;
+  @SuppressWarnings("unused")
+	private String direccion;
   private double facturado;
   final int maxPlazas = 10;
   private List<Registro> entradas;
