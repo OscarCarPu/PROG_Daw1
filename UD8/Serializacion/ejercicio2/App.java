@@ -31,6 +31,7 @@ public class App{
   public static void leer(){
     try{
       ObjectInputStream input = new ObjectInputStream(Files.newInputStream(Paths.get("ejercicio2.ser")));
+      @SuppressWarnings("unchecked")
       TreeMap<String,Coordenadas> m = (TreeMap<String,Coordenadas>) input.readObject();
       m.forEach((k,v) -> {
         System.out.println("Ciudad: "+k+" con coordenadas "+v);

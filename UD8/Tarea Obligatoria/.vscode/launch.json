@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Current File",
+      "request": "launch",
+      "mainClass": "${file}",
+      "vmArgs": "-Dfile.encoding=UTF-8"
+    },
+    {
+      "type": "java",
+      "name": "App",
+      "request": "launch",
+      "mainClass": "supermercado.App",
+      "projectName": "Tarea Obligatoria_9378d141",
+      "vmArgs": "-Dfile.encoding=UTF-8"
+    }
+  ]
+}
