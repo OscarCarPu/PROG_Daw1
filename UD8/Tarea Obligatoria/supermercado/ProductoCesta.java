@@ -1,6 +1,8 @@
 package supermercado;
 
-public class ProductoCesta {
+import java.io.Serializable;
+
+public class ProductoCesta implements Serializable{
   private int cantidad;
   private Producto producto;
 
