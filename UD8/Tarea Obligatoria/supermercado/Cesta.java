@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Cesta implements Serializable {
+
+  private static final long serialVersionUID = 3925053659644865387L;
   private int id;
   private boolean descuento;
   private ArrayList<ProductoCesta> compra;

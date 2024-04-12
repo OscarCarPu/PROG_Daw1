@@ -23,7 +23,7 @@ public class App {
     productos = new HashMap<>();
     cantidadTotal = 0.0;
     leerCantidadTotalAcumulativo();
-    System.out.println("Cantidad total acumulada de: " + String.format("%.2f",cantidadTotal)+ "$\n");
+    System.out.println("Cantidad total acumulada de: " + String.format("%.2f", cantidadTotal) + "$\n");
     Scanner in = new Scanner(System.in);
 
     ////// CARGAR PRODUCTOS DEMO
@@ -203,15 +203,15 @@ public class App {
     String filePath = "productos.txt";
     try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
       stream.forEach(line -> {
-        if(line.trim().isEmpty()){
+        if (line.trim().isEmpty()) {
           return;
         }
         String[] parts = line.split(":");
-        if(parts.length != 3){
+        if (parts.length != 3) {
           return;
         }
         String id = parts[0];
-        if(!id.matches("[A-D]-[0-9]{4}")){
+        if (!id.matches("[A-D]-[0-9]{4}")) {
           return;
         }
         String name = parts[1];
@@ -289,8 +289,8 @@ public class App {
             String id = parts[0];
             if (!id.matches("[A-D]-[0-9]{4}")) {
               System.out.println("Identificador de producto incorrecto: " + id);
-            }
-            else count.incrementAndGet();
+            } else
+              count.incrementAndGet();
           }
         }
       });

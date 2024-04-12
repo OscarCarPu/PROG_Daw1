@@ -2,41 +2,43 @@ package supermercado;
 
 import java.io.Serializable;
 
-public class ProductoCesta implements Serializable{
+public class ProductoCesta implements Serializable {
+  private static final long serialVersionUID = -6684765988876265031L;
   private int cantidad;
   private Producto producto;
 
-  public ProductoCesta(int cantidad,Producto producto){
-    this.cantidad=cantidad;
-    this.producto=producto;
+  public ProductoCesta(int cantidad, Producto producto) {
+    this.cantidad = cantidad;
+    this.producto = producto;
   }
 
-  public void setCantidad(int cantidad){
-    this.cantidad=cantidad;
+  public void setCantidad(int cantidad) {
+    this.cantidad = cantidad;
   }
 
-  public int getCantidad(){
+  public int getCantidad() {
     return cantidad;
   }
 
-  public void setProducto(Producto producto){
-    this.producto=producto;
+  public void setProducto(Producto producto) {
+    this.producto = producto;
   }
 
-  public Producto getProducto(){
+  public Producto getProducto() {
     return producto;
   }
 
-  public void addCantidad(int cantidad){
-    this.cantidad+=cantidad;
+  public void addCantidad(int cantidad) {
+    this.cantidad += cantidad;
   }
 
-  public void addCantidad(){
+  public void addCantidad() {
     this.cantidad++;
   }
 
   @Override
-  public String toString(){
-    return cantidad+" "+producto.getDescripcion()+" ------ "+String.format("%.2f",(producto.getPrecio()*cantidad))+"$";
+  public String toString() {
+    return cantidad + " " + producto.getDescripcion() + " ------ "
+        + String.format("%.2f", (producto.getPrecio() * cantidad)) + "$";
   }
 }
