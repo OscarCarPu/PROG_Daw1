@@ -1,14 +1,28 @@
 package podcast;
 
 public class Genero {
-  private int idGeneros;
+  private int id;
   private String nombre;
 
-  public Genero (int idGeneros,String nombre) {
+  public Genero (int id, String nombre) {
+    this.id = id;
     this.nombre = nombre;
-    this.idGeneros = idGeneros;
   }
+
+  public Genero (String nombre) {
+    this.nombre = nombre;
+  }
+
   public Genero () {
+
+  }
+
+  public int getId () {
+    return id;
+  }
+
+  public void setId (int id) {
+    this.id = id;
   }
 
   public String getNombre () {
@@ -18,14 +32,4 @@ public class Genero {
   public void setNombre (String nombre) {
     this.nombre = nombre;
   }
-
-  public int getIdGeneros () {
-    return idGeneros;
-  }
-
-  public void setIdGeneros (int idGeneros) {
-    this.idGeneros = idGeneros;
-  }
-
-  
 }

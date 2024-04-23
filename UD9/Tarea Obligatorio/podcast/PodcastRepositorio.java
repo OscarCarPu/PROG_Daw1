@@ -7,283 +7,150 @@ import java.util.List;
 import javax.sql.rowset.JdbcRowSet;
 import javax.sql.rowset.RowSetProvider;
 
-public class PodcastRepositorio implements PodcastRepositorioInterfaz {
- 
-  private JdbcRowSet rowSet = null;
+public class PodcastRepositorio {
+  private HashMap<Integer, Autor> autoresCache;
+  private HashMap<Integer, Genero> generosCache;
+  private JdbcRowSet jrs;
 
-  public PodcastRepositorio() {
+  public PodcastRepositorio (){
     try {
-      rowSet = RowSetProvider.newFactory().createJdbcRowSet();
-      rowSet.setUrl("jdbc:mariadb://dbalumnos.sanclemente.local:3314/podcast_a23OscarCP");
-
-      rowSet.setUsername("alumno");
-      rowSet.setPassword("abc123..");
-
+      jrs = RowSetProvider.newFactory().createJdbcRowSet();
+      jrs.setUrl("jdbc:mariadb://dbalumnos.sanclemente.local:3314/podcast_a23OscarCP");
+      jrs.setUsername("alumno");
+      jrs.setPassword("abc123..");
+      jrs.setCommand("SELECT * FROM podcast");
+      jrs.execute();
     } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
+      System.out.println("Error al conectar a la base de datos: " + e.getMessage());
+      System.exit(1);
     }
+    generosCache = new HashMap<>();
+    autoresCache = new HashMap<>();
+  }
+
+  public void close(){
+    try {
+      jrs.close();
+    } catch (Exception e) {
+      System.out.println("Error al cerrar la conexion: " + e.getMessage());
+    }
+  }
+
+  public Autor getAutor(int id){
+    try {
+      jrs.setCommand("SELECT * FROM autor WHERE id = ?");
+      jrs.setInt(1, id);
+      jrs.execute();
+      if(jrs.next()){
+        return new Autor(jrs.getInt(1), jrs.getString(2), jrs.getString(3), jrs.getString(4));
+      }
+    } catch (Exception e) {
+      System.out.println("Error al obtener autor: " + e.getMessage());
+    }
+    return null;
+  }
+
+  public Genero getGenero(int id){
+    try {
+      jrs.setCommand("SELECT * FROM genero WHERE id = ?");
+      jrs.setInt(1, id);
+      jrs.execute();
+      if(jrs.next()){
+        return new Genero(jrs.getInt(1), jrs.getString(2));
+      }
+    } catch (Exception e) {
+      System.out.println("Error al obtener genero: " + e.getMessage());
+    }
+    return null;
   }
 
   public boolean insertPodcast(Podcast p){
     try {
-      rowSet.setCommand("SELECT * FROM podcast");
-      rowSet.execute();
-      rowSet.moveToInsertRow();
-      rowSet.updateString("titulo", p.getTitulo());
-      rowSet.updateInt("tipo", p.getTipo());
-      rowSet.updateString("calidad", p.getCalidad());
-      rowSet.updateInt("duracion", p.getDuracion());
-      rowSet.updateString("periocidad", p.getPeriocidad());
-      rowSet.updateString("formato_video", p.getFormato_video());
-      rowSet.updateInt("idAutor", p.getAutor().getIdAutor());
-      rowSet.insertRow();
-      rowSet.moveToCurrentRow();
-
-      rowSet.setCommand("SELECT * FROM gen_pod");
-      rowSet.execute();
-      for (Genero g : p.getGeneros()) {
-        rowSet.moveToInsertRow();
-        rowSet.updateInt("idPodcat", p.getIdPodcast());
-        rowSet.updateInt("idGenero", g.getIdGeneros());
-        rowSet.insertRow();
-        rowSet.moveToCurrentRow();
-      }
+      jrs.setCommand("INSERT INTO podcast (titulo, tipo, duracion, periocidad, id_autor) VALUES (?, ?, ?, ?, ?)");
+      jrs.setString(1, p.getTitulo());
+      jrs.setInt(2, p.getTipo());
+      jrs.setInt(3, p.getDuracion());
+      jrs.setString(4, p.getPeriocidad());
+      jrs.setInt(5, p.getAutor().getId());
+      jrs.execute();
       return true;
     } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
+      System.out.println("Error al insertar podcast: " + e.getMessage());
       return false;
     }
   }
 
   public boolean newGenPodcast(Genero g){
-    try {
-      rowSet.setCommand("SELECT * FROM genero");
-      rowSet.execute();
-      rowSet.moveToInsertRow();
-      rowSet.updateString("nombre", g.getNombre());
-      rowSet.insertRow();
-      rowSet.moveToCurrentRow();
+    try{
+      jrs.setCommand("INSERT INTO genero (nombre) VALUES (?)");
+      jrs.setString(1, g.getNombre());
+      jrs.execute();
       return true;
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
+    }catch(Exception e){
+      System.out.println("Error al insertar genero: " + e.getMessage());
       return false;
     }
   }
 
   public boolean updatePodcast(Podcast p){
-    try {
-      rowSet.setCommand("SELECT * FROM podcast");
-      rowSet.execute();
-      rowSet.beforeFirst();
-      while (rowSet.next()) {
-        if (rowSet.getInt("idPodcast") == p.getIdPodcast()) {
-          rowSet.updateString("titulo", p.getTitulo());
-          rowSet.updateInt("tipo", p.getTipo());
-          rowSet.updateString("calidad", p.getCalidad());
-          rowSet.updateInt("duracion", p.getDuracion());
-          rowSet.updateString("periocidad", p.getPeriocidad());
-          rowSet.updateString("formato_video", p.getFormato_video());
-          rowSet.updateInt("idAutor", p.getAutor().getIdAutor());
-          rowSet.updateRow();
-          break;
-        }
-      }
-      rowSet.setCommand("SELECT * FROM gen_pod");
-      rowSet.execute();
-      rowSet.beforeFirst();
-      while (rowSet.next()) {
-        if (rowSet.getInt("idPodcat") == p.getIdPodcast()) {
-          rowSet.deleteRow();
-        }
-      }
-      for (Genero g : p.getGeneros()) {
-        rowSet.moveToInsertRow();
-        rowSet.updateInt("idPodcat", p.getIdPodcast());
-        rowSet.updateInt("idGenero", g.getIdGeneros());
-        rowSet.insertRow();
-        rowSet.moveToCurrentRow();
-      }
-      return true;
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return false;
-    }
+return true;
   }
 
   public boolean deletePodcast(Podcast p){
-    try {
-      rowSet.setCommand("SELECT * FROM podcast");
-      rowSet.execute();
-      rowSet.beforeFirst();
-      while (rowSet.next()) {
-        if (rowSet.getInt("idPodcast") == p.getIdPodcast()) {
-          rowSet.deleteRow();
-          break;
-        }
-      }
-      rowSet.setCommand("SELECT * FROM gen_pod");
-      rowSet.execute();
-      rowSet.beforeFirst();
-      while (rowSet.next()) {
-        if (rowSet.getInt("idPodcat") == p.getIdPodcast()) {
-          rowSet.deleteRow();
-        }
-      }
-      return true;
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return false;
-    }
-  }
-
-  public List<Genero> viewAllGenero(){
-    try {
-      rowSet.setCommand("SELECT * FROM genero");
-      rowSet.execute();
-      List<Genero> generos = new ArrayList<Genero>();
-      while (rowSet.next()) {
-        generos.add(new Genero(rowSet.getInt("idGeneros"), rowSet.getString("nombre")));
-      }
-      return generos;
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return null;
-    }
-  }
-
-  public Genero findByIdGenero(int id){
-    try {
-      rowSet.setCommand("SELECT * FROM genero");
-      rowSet.execute();
-      rowSet.beforeFirst();
-      while (rowSet.next()) {
-        if (rowSet.getInt("idGeneros") == id) {
-          return new Genero(rowSet.getInt("idGeneros"), rowSet.getString("nombre"));
-        }
-      }
-      return null;
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return null;
-    }
-  }
-
-  public List<Autor> viewAllAutor(){
-    try {
-      rowSet.setCommand("SELECT * FROM autor");
-      rowSet.execute();
-      List<Autor> autores = new ArrayList<Autor>();
-      while (rowSet.next()) {
-        autores.add(new Autor(rowSet.getInt("idAutor"), rowSet.getString("nombre"), rowSet.getString("apellidos"), rowSet.getString("email")));
-      }
-      return autores;
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return null;
-    }
-  }
-
-  public Autor findByIdAutor(int id){
-    try {
-      rowSet.setCommand("SELECT * FROM autor");
-      rowSet.execute();
-      rowSet.beforeFirst();
-      while (rowSet.next()) {
-        if (rowSet.getInt("idAutor") == id) {
-          return new Autor(rowSet.getInt("idAutor"), rowSet.getString("nombre"), rowSet.getString("apellidos"), rowSet.getString("email"));
-        }
-      }
-      return null;
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return null;
-    }
+return true;
   }
 
   public List<Podcast> viewAllPodcast(){
-    try {
-      rowSet.setCommand("SELECT * FROM podcast");
-      rowSet.execute();
-      List<Podcast> podcasts = new ArrayList<Podcast>();
-      while (rowSet.next()) {
-        List<Genero> generos = new ArrayList<Genero>();
-        rowSet.setCommand("SELECT * FROM gen_pod");
-        rowSet.execute();
-        rowSet.beforeFirst();
-        while (rowSet.next()) {
-          if (rowSet.getInt("idPodcat") == rowSet.getInt("idPodcast")) {
-            generos.add(findByIdGenero(rowSet.getInt("idGenero")));
-          }
-        }
-        podcasts.add(new Podcast(rowSet.getInt("idPodcast"), rowSet.getString("titulo"), rowSet.getInt("tipo"), rowSet.getString("calidad"), rowSet.getInt("duracion"), rowSet.getString("periocidad"), rowSet.getString("formato_video"), findByIdAutor(rowSet.getInt("idAutor")), generos));
-      }
-      return podcasts;
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return null;
-    }
+return null;
   }
 
   public Podcast findByIdPodcast(int id){
+    updateCacheGeneros();
+    updateCacheAutores();
     try {
-      rowSet.setCommand("SELECT * FROM podcast");
-      rowSet.execute();
-      rowSet.beforeFirst();
-      while (rowSet.next()) {
-        if (rowSet.getInt("idPodcast") == id) {
-          List<Genero> generos = new ArrayList<Genero>();
-          rowSet.setCommand("SELECT * FROM gen_pod");
-          rowSet.execute();
-          rowSet.beforeFirst();
-          while (rowSet.next()) {
-            if (rowSet.getInt("idPodcat") == rowSet.getInt("idPodcast")) {
-              generos.add(findByIdGenero(rowSet.getInt("idGenero")));
-            }
-          }
-          return new Podcast(rowSet.getInt("idPodcast"), rowSet.getString("titulo"), rowSet.getInt("tipo"), rowSet.getString("calidad"), rowSet.getInt("duracion"), rowSet.getString("periocidad"), rowSet.getString("formato_video"), findByIdAutor(rowSet.getInt("idAutor")), generos);
+      jrs.setCommand("SELECT * FROM genero_podcast WHERE id_podcast = ?");
+      jrs.setInt(1, id);
+      jrs.execute();
+      List<Genero> generos = new ArrayList<>();
+      while(jrs.next()){
+        generos.add(generosCache.get(jrs.getInt(2)));
+      }
+      jrs.setCommand("SELECT * FROM podcast WHERE id = ?");
+      jrs.setInt(1, id);
+      jrs.execute();
+      if(jrs.next()){
+        if(jrs.getInt(3)==0){
+          return new PodcastAudio(jrs.getInt(1), jrs.getString(2), jrs.getInt(3), jrs.getInt(5), jrs.getString(6), autoresCache.get(jrs.getInt(8)), generos,jrs.getString(4));
         }
       }
-      return null;
     } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return null;
+      System.out.println("Error al obtener podcast: " + e.getMessage());
     }
   }
 
-  public boolean asignarGenero(int idPodcast, int idGenero){
+  private void updateCacheGeneros(){
     try {
-      rowSet.setCommand("SELECT * FROM gen_pod");
-      rowSet.execute();
-      rowSet.moveToInsertRow();
-      rowSet.updateInt("idPodcat", idPodcast);
-      rowSet.updateInt("idGenero", idGenero);
-      rowSet.insertRow();
-      rowSet.moveToCurrentRow();
-      return true;
+      jrs.setCommand("SELECT * FROM genero");
+      jrs.execute();
+      generosCache.clear();
+      while(jrs.next()){
+        generosCache.put(jrs.getInt(1),new Genero(jrs.getInt(1), jrs.getString(2)));
+      }
     } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return false;
+      System.out.println("Error al obtener generos: " + e.getMessage());
     }
   }
 
-  public Podcast navPodcast(int id){
-    try {
-      List<Genero> generos = viewAllGenero();
-      Podcast pp = findByIdPodcast(id);
-      if (pp != null) {
-        System.out.println("Podcast: " + pp.getTitulo());
-        System.out.println("Tipo: " + pp.getTipo());
-        System.out.println("Calidad: " + pp.getCalidad());
-        System.out.println("Duracion: " + pp.getDuracion());
-        System.out.println("Periocidad: " + pp.getPeriocidad());
-        System.out.println("Formato video: " + pp.getFormato_video());
-        System.out.println("Autor: " + pp.getAutor().getNombre() + " " + pp.getAutor().getApellidos());
-        System.out.println("Generos: ");
-        for (Genero g : pp.getGeneros()) {
-          System.out.println(g.getNombre());
-        }
-        return pp;
+  private void updateCacheAutores(){
+    try{
+      jrs.setCommand("SLECT * from autor");
+      jrs.execute();
+      autoresCache.clear();
+      while(jrs.next()){
+        autoresCache.put(jrs.getInt(1),new Autor(jrs.getInt(1), jrs.getString(2), jrs.getString(3), jrs.getString(4)));
       }
+    } catch (Exception e) {
+      System.out.println("Error al obtener autores: " + e.getMessage());
     }
   }
 }

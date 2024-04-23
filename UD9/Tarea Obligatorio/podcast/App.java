@@ -1,28 +1,33 @@
 package podcast;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class App {
-  
-  private static PodcastRepositorio repo;
+
+  private static PodcastRepositorio pr;
   private static Scanner in;
-  public static void main(String[] args){
-    System.out.println("Iniciando programa");
-    repo = new PodcastRepositorio();
-    int option = 0;
+
+  public static void main(String[] args) {
+    pr = new PodcastRepositorio();
     in = new Scanner(System.in);
-    do{
+
+    int opcion = 0;
+
+    do {
       printMenu();
-      option = in.nextInt();
-      switch(option){
+      opcion = in.nextInt();
+      in.nextLine();
+      switch (opcion) {
         case 1:
-          insertarPodcast();
+          agregarPodcast();
           break;
         case 2:
+          agregarGenero();
           break;
         case 3:
+          updateGenerosPodcast();
           break;
         case 4:
           break;
@@ -31,118 +36,145 @@ public class App {
         case 6:
           break;
         case 0:
+          System.out.println("Adios!");
           break;
         default:
           System.out.println("Opcion no valida");
-          break;
       }
-    }while(option!=0);
-    System.out.println("Saliendo del programa");
+    } while (opcion != 0);
+
     in.close();
+
+    pr.close();
   }
 
-  public static void printMenu(){
-    System.out.println("Selecciona una opción");
+  private static void printMenu() {
     System.out.println("0 - Salir");
-    System.out.println("1 - Agregar nuevo podcast");
-    System.out.println("2 - Dar de alta nuevo género");
-    System.out.println("3 - Asignar género a podcast");
-    System.out.println("4 - Eliminar podcast");
-    System.out.println("5 - Visualizar podcast");
-    System.out.println("6 - Recorrer podcast");
+    System.out.println("1 - Agregar Podcast");
+    System.out.println("2 - Dar de alta genero");
+    System.out.println("3 - Actualizar generos de un podcast");
+    System.out.println("4 - Eliminar un podcast");
+    System.out.println("5 - Lisar podcasts");
+    System.out.println("6 - Navegar por podcasts");
   }
 
-  public static void insertarPodcast(){
-    System.out.println("Introduce el id del podcast");
-    int idPodcast = in.nextInt();
-    System.out.println("Introduce el titulo del podcast");
+  private static void agregarPodcast() {
+    System.out.println("Titulo: ");
     String titulo = in.nextLine();
-    System.out.println("Introduce el tipo del podcast");
+    System.out.println("Tipo (0 - Audio, 1 - Video): ");
     int tipo = in.nextInt();
-    System.out.println("Introduce la calidad del podcast");
-    String calidad = in.nextLine();
-    System.out.println("Introduce la duracion del podcast");
+    in.nextLine();
+    if (tipo != 0 && tipo != 1) {
+      System.out.println("Tipo no valido");
+      return;
+    }
+    String variable;
+    if (tipo == 0) {
+      System.out.println("Calidad: ");
+      variable = in.nextLine();
+    } else {
+      System.out.println("Formato: ");
+      variable = in.nextLine();
+    }
+
+    System.out.println("Duracion: ");
     int duracion = in.nextInt();
-    System.out.println("Introduce la periocidad del podcast");
+    in.nextLine();
+    System.out.println("Periocidad: ");
     String periocidad = in.nextLine();
-    System.out.println("Introduce el formato del video del podcast");
-    String formato_video = in.nextLine();
-   System.out.println("Introduce el autor del podcast");
-    int idAutor = in.nextInt();
-    Autor autor = repo.findByIdAutor(idAutor);
-    int idGeneros = 0;
-    List<Genero> generos = new ArrayList<Genero>();
-    while(idGeneros>=0){
-      System.out.println("Introduce el id del genero del podcast, -1 para salir");
-      idGeneros = in.nextInt();
-      if(idGeneros>=0){
-        generos.add(repo.findByIdGenero(idGeneros));
+    Autor autor = null;
+    do {
+      System.out.println("Id de autor: ");
+      int idAutor = in.nextInt();
+      in.nextLine();
+      autor = pr.getAutor(idAutor);
+      if (autor == null) {
+        System.out.println("Autor no encontrado");
       }
-    }
-    Podcast podcast = new Podcast(idPodcast, titulo, tipo, calidad, duracion, periocidad, formato_video, autor, generos);
-    if(repo.insertPodcast(podcast)){
-      System.out.println("Podcast creado correctamente");
-    }
-    else{
-      System.out.println("Error al crear podcast");
-    }
-  }
-
-  public static void nuevoGenero(){
-    System.out.println("Introduce el id del genero");
-    int idGenero = in.nextInt();
-    System.out.println("Introduce el nombre del genero");
-    String nombre = in.nextLine();
-    Genero genero = new Genero(idGenero, nombre);
-    if(repo.newGenPodcast(genero)){
-      System.out.println("Genero creado correctamente");
-    }
-    else{
-      System.out.println("Error al crear genero");
-    }
-  }
-
-  public static void asignarGenero(){
-    System.out.println("Introduce el id del podcast");
-    int idPodcast = in.nextInt();
-    System.out.println("Introduce el id del genero");
-    int idGenero = in.nextInt();
-    if(repo.asignarGenero(idPodcast, idGenero)){
-      System.out.println("Genero asignado correctamente");
-    }
-    else{
-      System.out.println("Error al asignar genero");
-    }
-  }
-
-  public static void eliminarPodcast(){
-    System.out.println("Introduce el id del podcast");
-    int idPodcast = in.nextInt();
-    if(repo.deletePodcast(repo.findByIdPodcast(idPodcast))){
-      System.out.println("Podcast eliminado correctamente");
-    }
-    else{
-      System.out.println("Error al eliminar podcast");
-    }
-  }
-
-  public static void visualizarPodcasts(){
-    List<Podcast> podcasts = repo.viewAllPodcast();
-    for(Podcast p: podcasts){
-      System.out.println("ID: " + p.getIdPodcast() + " Titulo: " + p.getTitulo() + " Tipo: " + p.getTipo() + " Calidad: " + p.getCalidad() + " Duracion: " + p.getDuracion() + " Periocidad: " + p.getPeriocidad() + " Formato video: " + p.getFormato_video() + " Autor: " + p.getAutor().getNombre() + " Generos: ");
-      for(Genero g: p.getGeneros()){
-        System.out.println("ID: " + g.getIdGeneros() + " Nombre: " + g.getNombre());
+    } while (autor == null);
+    List<Genero> generos = new ArrayList<>();
+    int idGenero = 0;
+    do {
+      System.out.println("Id de genero (0 para terminar): ");
+      idGenero = in.nextInt();
+      in.nextLine();
+      if (idGenero != 0) {
+        Genero genero = pr.getGenero(idGenero);
+        if (genero == null) {
+          System.out.println("Genero no encontrado");
+        } else {
+          generos.add(genero);
+        }
       }
+    } while (idGenero != 0);
+
+    Podcast podcast = null;
+
+    if (tipo == 0) {
+      podcast = new PodcastAudio(titulo, tipo, duracion, periocidad, autor, generos, variable);
+    } else {
+      podcast = new PodcastVideo(titulo, tipo, duracion, periocidad, autor, generos, variable);
+    }
+
+    if (pr.insertPodcast(podcast)) {
+      System.out.println("Podcast insertado");
+    } else {
+      System.out.println("Error al insertar podcast");
     }
   }
 
-  public static void recorrerPodcasts(){
-    System.out.println("Introduce el id del podcast");
-    int idPodcast = in.nextInt();
-    Podcast p = repo.findByIdPodcast(idPodcast);
-    System.out.println("ID: " + p.getIdPodcast() + " Titulo: " + p.getTitulo() + " Tipo: " + p.getTipo() + " Calidad: " + p.getCalidad() + " Duracion: " + p.getDuracion() + " Periocidad: " + p.getPeriocidad() + " Formato video: " + p.getFormato_video() + " Autor: " + p.getAutor().getNombre() + " Generos: ");
-    for(Genero g: p.getGeneros()){
-      System.out.println("ID: " + g.getIdGeneros() + " Nombre: " + g.getNombre());
+  private static void agregarGenero() {
+    try {
+      System.out.println("Nombre de genero: ");
+      String nombre = in.nextLine();
+      Genero genero = new Genero(nombre);
+      if (pr.newGenPodcast(genero)) {
+        System.out.println("Genero insertado");
+      } else {
+        System.out.println("Error al insertar genero");
+      }
+    } catch (Exception e) {
+      System.out.println("Error al insertar genero: " + e.getMessage());
+    }
+  }
+
+  private static void updateGenerosPodcast() {
+    try {
+      Podcast p = null;
+      do{
+        System.out.println("Id de podcast: ");
+        int idPodcast = in.nextInt();
+        in.nextLine();
+        p = pr.findByIdPodcast(idPodcast);
+        if(p == null){
+          System.out.println("Podcast no encontrado");
+        }
+
+      }while(p == null);
+
+      List<Genero> generos = new ArrayList<>();
+
+      int idGenero = 0;
+
+      do {
+        System.out.println("Id de genero (0 para terminar): ");
+        idGenero = in.nextInt();
+        in.nextLine();
+        if (idGenero != 0) {
+          Genero genero = pr.getGenero(idGenero);
+          if (genero == null) {
+            System.out.println("Genero no encontrado");
+          } else {
+            generos.add(genero);
+          }
+        }
+      } while (idGenero != 0);
+
+      p.setGeneros(generos);
+
+      pr.updatePodcast(p);
+    } catch (Exception e) {
+      System.out.println("Error al actualizar podcast: " + e.getMessage());
     }
   }
 }

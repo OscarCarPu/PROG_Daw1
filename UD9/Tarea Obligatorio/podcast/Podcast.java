@@ -3,37 +3,43 @@ package podcast;
 import java.util.List;
 
 public class Podcast {
-  private int idPodcast;
+  private int id;
   private String titulo;
   private int tipo;
-  private String calidad;
   private int duracion;
   private String periocidad;
-  private String formato_video;
   private Autor autor;
   private List<Genero> generos;
 
-  public Podcast (int idPodcast, String titulo, int tipo, String calidad, int duracion, String periocidad, String formato_video, Autor autor, List<Genero> generos) {
-    this.idPodcast = idPodcast;
+  public Podcast (int id, String titulo, int tipo, int duracion, String periocidad, Autor autor, List<Genero> generos) {
+    this.id = id;
     this.titulo = titulo;
     this.tipo = tipo;
-    this.calidad = calidad;
     this.duracion = duracion;
     this.periocidad = periocidad;
-    this.formato_video = formato_video;
+    this.autor = autor;
+    this.generos = generos;
+  }
+
+  public Podcast(String titulo, int tipo, int duracion, String periocidad, Autor autor, List<Genero> generos) {
+    this.titulo = titulo;
+    this.tipo = tipo;
+    this.duracion = duracion;
+    this.periocidad = periocidad;
     this.autor = autor;
     this.generos = generos;
   }
 
   public Podcast () {
+
   }
 
-  public int getIdPodcast () {
-    return idPodcast;
+  public int getId () {
+    return id;
   }
 
-  public void setIdPodcast (int idPodcast) {
-    this.idPodcast = idPodcast;
+  public void setId (int id) {
+    this.id = id;
   }
 
   public String getTitulo () {
@@ -52,14 +58,6 @@ public class Podcast {
     this.tipo = tipo;
   }
 
-  public String getCalidad () {
-    return calidad;
-  }
-
-  public void setCalidad (String calidad) {
-    this.calidad = calidad;
-  }
-
   public int getDuracion () {
     return duracion;
   }
@@ -74,14 +72,6 @@ public class Podcast {
 
   public void setPeriocidad (String periocidad) {
     this.periocidad = periocidad;
-  }
-
-  public String getFormato_video () {
-    return formato_video;
-  }
-
-  public void setFormato_video (String formato_video) {
-    this.formato_video = formato_video;
   }
 
   public Autor getAutor () {
@@ -99,6 +89,4 @@ public class Podcast {
   public void setGeneros (List<Genero> generos) {
     this.generos = generos;
   }
-
-
 }

@@ -1,27 +1,34 @@
 package podcast;
 
 public class Autor {
-  private int idAutor;
+  private int id;
   private String dni;
-  private String nombre;
   private String apellidos;
+  private String nombre;
 
-  public Autor (int idAutor,String dni, String nombre, String apellidos) {
-    this.idAutor = idAutor;
+  public Autor (int id, String dni, String apellidos, String nombre) {
+    this.id = id;
     this.dni = dni;
-    this.nombre = nombre;
     this.apellidos = apellidos;
+    this.nombre = nombre;
+  }
+
+  public Autor (String dni, String apellidos, String nombre) {
+    this.dni = dni;
+    this.apellidos = apellidos;
+    this.nombre = nombre;
   }
 
   public Autor () {
+
   }
 
-  public int getIdAutor () {
-    return idAutor;
+  public int getId () {
+    return id;
   }
 
-  public void setIdAutor (int idAutor) {
-    this.idAutor = idAutor;
+  public void setId (int id) {
+    this.id = id;
   }
 
   public String getDni () {
@@ -32,19 +39,19 @@ public class Autor {
     this.dni = dni;
   }
 
-  public String getNombre () {
-    return nombre;
-  }
-
-  public void setNombre (String nombre) {
-    this.nombre = nombre;
-  }
-
   public String getApellidos () {
     return apellidos;
   }
 
   public void setApellidos (String apellidos) {
     this.apellidos = apellidos;
+  }
+
+  public String getNombre () {
+    return nombre;
+  }
+
+  public void setNombre (String nombre) {
+    this.nombre = nombre;
   }
 }
