@@ -30,10 +30,13 @@ public class App {
           updateGenerosPodcast();
           break;
         case 4:
+          eliminarPodcast();
           break;
         case 5:
+          listarPodcasts();
           break;
         case 6:
+          navegarPodcasts();
           break;
         case 0:
           System.out.println("Adios!");
@@ -54,19 +57,26 @@ public class App {
     System.out.println("2 - Dar de alta genero");
     System.out.println("3 - Actualizar generos de un podcast");
     System.out.println("4 - Eliminar un podcast");
-    System.out.println("5 - Lisar podcasts");
+    System.out.println("5 - Listar podcasts");
     System.out.println("6 - Navegar por podcasts");
   }
 
   private static void agregarPodcast() {
     System.out.println("Titulo: ");
     String titulo = in.nextLine();
-    System.out.println("Tipo (0 - Audio, 1 - Video): ");
-    int tipo = in.nextInt();
-    in.nextLine();
-    if (tipo != 0 && tipo != 1) {
-      System.out.println("Tipo no valido");
-      return;
+    int tipo = -1;
+    while (tipo != 0 && tipo != 1) {
+      try {
+        System.out.println("Tipo (0 - Audio, 1 - Video): ");
+        tipo = in.nextInt();
+        in.nextLine();
+      } catch (Exception e) {
+        System.out.println("Tipo no valido");
+        in.nextLine();
+      }
+      if (tipo != 0 && tipo != 1) {
+        System.out.println("Tipo no valido");
+      }
     }
     String variable;
     if (tipo == 0) {
@@ -78,8 +88,19 @@ public class App {
     }
 
     System.out.println("Duracion: ");
-    int duracion = in.nextInt();
-    in.nextLine();
+    int duracion = -1;
+    while (duracion < 0) {
+      try {
+        duracion = in.nextInt();
+        in.nextLine();
+      } catch (Exception e) {
+        System.out.println("Duracion no valida");
+        in.nextLine();
+      }
+      if (duracion < 0) {
+        System.out.println("Duracion no valida");
+      }
+    }
     System.out.println("Periocidad: ");
     String periocidad = in.nextLine();
     Autor autor = null;
@@ -141,16 +162,16 @@ public class App {
   private static void updateGenerosPodcast() {
     try {
       Podcast p = null;
-      do{
+      do {
         System.out.println("Id de podcast: ");
         int idPodcast = in.nextInt();
         in.nextLine();
         p = pr.findByIdPodcast(idPodcast);
-        if(p == null){
+        if (p == null) {
           System.out.println("Podcast no encontrado");
         }
 
-      }while(p == null);
+      } while (p == null);
 
       List<Genero> generos = new ArrayList<>();
 
@@ -172,9 +193,89 @@ public class App {
 
       p.setGeneros(generos);
 
-      pr.updatePodcast(p);
+      if (pr.updatePodcast(p)) {
+        System.out.println("Podcast actualizado");
+      } else {
+        System.out.println("Error al actualizar podcast");
+      }
     } catch (Exception e) {
       System.out.println("Error al actualizar podcast: " + e.getMessage());
     }
+  }
+
+  private static void eliminarPodcast() {
+    try {
+      Podcast p = null;
+      do {
+        System.out.println("Id de podcast: ");
+        int idPodcast = in.nextInt();
+        in.nextLine();
+        p = pr.findByIdPodcast(idPodcast);
+        if (p == null) {
+          System.out.println("Podcast no encontrado");
+        }
+      } while (p == null);
+
+      if (pr.deletePodcast(p)) {
+        System.out.println("Podcast eliminado");
+      } else {
+        System.out.println("Error al eliminar podcast");
+      }
+    } catch (Exception e) {
+      System.out.println("Error al eliminar podcast: " + e.getMessage());
+    }
+  }
+
+  private static void listarPodcasts() {
+    List<Podcast> podcasts = pr.viewAllPodcast();
+    for (Podcast p : podcasts) {
+      System.out.println(p);
+    }
+  }
+
+  private static void navegarPodcasts() {
+    System.out.println("Indica el id del podcast inicial: ");
+    int id = -1;
+    while (id < 0) {
+      try {
+        id = in.nextInt();
+        in.nextLine();
+      } catch (Exception e) {
+        System.out.println("Id no valido");
+        in.nextLine();
+      }
+      if (id < 0) {
+        System.out.println("Id no valido");
+      } else if (pr.findByIdPodcast(id) == null) {
+        System.out.println("Podcast no encontrado");
+        id = -1;
+      }
+    }
+    pr.setNavTo(id);
+    int opcion = 0;
+    do {
+      System.out.println("1. Siguiente");
+      System.out.println("2. Anterior");
+      System.out.println("3. Ver podcast");
+      System.out.println("0. Salir");
+      opcion = in.nextInt();
+      in.nextLine();
+      switch (opcion) {
+        case 1:
+          pr.nextPodcast();
+          break;
+        case 2:
+          pr.prevPodcast();
+          break;
+        case 3:
+          System.out.println(pr.getPodcast());
+          break;
+        case 0:
+          break;
+        default:
+          System.out.println("Opcion no valida");
+          break;
+      }
+    } while (opcion != 0);
   }
 }

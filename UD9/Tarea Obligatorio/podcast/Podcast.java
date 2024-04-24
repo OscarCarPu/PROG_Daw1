@@ -11,7 +11,7 @@ public class Podcast {
   private Autor autor;
   private List<Genero> generos;
 
-  public Podcast (int id, String titulo, int tipo, int duracion, String periocidad, Autor autor, List<Genero> generos) {
+  public Podcast(int id, String titulo, int tipo, int duracion, String periocidad, Autor autor, List<Genero> generos) {
     this.id = id;
     this.titulo = titulo;
     this.tipo = tipo;
@@ -30,63 +30,77 @@ public class Podcast {
     this.generos = generos;
   }
 
-  public Podcast () {
+  public Podcast() {
 
   }
 
-  public int getId () {
+  public int getId() {
     return id;
   }
 
-  public void setId (int id) {
+  public void setId(int id) {
     this.id = id;
   }
 
-  public String getTitulo () {
+  public String getTitulo() {
     return titulo;
   }
 
-  public void setTitulo (String titulo) {
+  public void setTitulo(String titulo) {
     this.titulo = titulo;
   }
 
-  public int getTipo () {
+  public int getTipo() {
     return tipo;
   }
 
-  public void setTipo (int tipo) {
+  public void setTipo(int tipo) {
     this.tipo = tipo;
   }
 
-  public int getDuracion () {
+  public int getDuracion() {
     return duracion;
   }
 
-  public void setDuracion (int duracion) {
+  public void setDuracion(int duracion) {
     this.duracion = duracion;
   }
 
-  public String getPeriocidad () {
+  public String getPeriocidad() {
     return periocidad;
   }
 
-  public void setPeriocidad (String periocidad) {
+  public void setPeriocidad(String periocidad) {
     this.periocidad = periocidad;
   }
 
-  public Autor getAutor () {
+  public Autor getAutor() {
     return autor;
   }
 
-  public void setAutor (Autor autor) {
+  public void setAutor(Autor autor) {
     this.autor = autor;
   }
 
-  public List<Genero> getGeneros () {
+  public List<Genero> getGeneros() {
     return generos;
   }
 
-  public void setGeneros (List<Genero> generos) {
+  public void setGeneros(List<Genero> generos) {
     this.generos = generos;
+  }
+
+  @Override
+  public String toString() {
+    String generos = "";
+    if (this.generos != null) {
+      for (Genero genero : this.generos) {
+        generos += genero + ", ";
+      }
+      generos = generos.substring(0, generos.length() - 2);
+    }
+    String ret = "ID: " + id + " - Titulo: " + titulo + " - Tipo: " + (tipo == 1 ? "Video" : "Audio") + " - Duracion: "
+        + duracion + " - Periocidad: " + periocidad + " - Autor: " + autor + " - Generos: " + generos;
+    return ret;
   }
 }
