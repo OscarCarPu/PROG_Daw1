@@ -66,4 +66,12 @@ public class Equipo {
     return "Equipo: " + nombre + ", Puntos: " + puntos + ", Capitan: " + capitan.getNombre() + " "
         + capitan.getApellidos();
   }
+
+  public int getPuntos() {
+    return puntos;
+  }
+
+  public int getNumParticipantes() {
+    return miembros.size();
+  }
 }

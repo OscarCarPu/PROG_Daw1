@@ -43,6 +43,7 @@ public class App {
 
     this.altaEquipoCarrera(e3, c2);
     this.altaEquipoCarrera(e2, c1);
+    this.altaEquipoCarrera(e1, c1);
 
     this.altaParticipanteEquipo(p4, e1);
     this.altaParticipanteEquipo(p5, e1);
@@ -111,7 +112,12 @@ public class App {
     String seniorsE2 = e2.getMiembros().stream()
         .filter(p -> p.calcularCategoria().equals("Senior") && p.getSexo() == 'M').map(p -> p.toString())
         .collect(Collectors.joining(", "));
-    seniorsE2 = seniorsE2.substring(0, seniorsE2.length() - 2);
+    if (seniorsE1.isEmpty() && seniorsE2.isEmpty())
+      return "No hay participantes senior en los equipos";
+    if (seniorsE1.isEmpty())
+      return seniorsE2;
+    if (seniorsE2.isEmpty())
+      return seniorsE1;
     return seniorsE1 + ", " + seniorsE2;
   }
 
@@ -153,5 +159,15 @@ public class App {
 
   public Optional<Carrera> getCarrera(String nombre) {
     return carreras.stream().filter(c -> c.getNombre().equals(nombre)).findFirst();
+  }
+
+  public Equipo getEquipoMasPuntos(List<Equipo> equiposAux) {
+    Equipo e = equipos.stream().filter(eq -> equiposAux.contains(eq)).max((e1, e2) -> e1.getPuntos() - e2.getPuntos()).get();
+    return e;
+  }
+
+  public int getNumParticipantes(List<Equipo> equiposAux) {
+    int numParticipantes = equipos.stream().filter(e -> equiposAux.contains(e)).mapToInt(e -> e.getNumParticipantes()).sum();
+    return numParticipantes;
   }
 }

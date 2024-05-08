@@ -53,4 +53,8 @@ public class Carrera {
     return "Carrera: " + nombre + ", Fecha: " + fecha + ", Km: " + km + "\nPremios: " + premios[0] + "€, " + premios[1]
         + "€, " + premios[2] + "€";
   }
+
+  public List<Equipo> getEquipos() {
+    return equipos;
+  }
 }

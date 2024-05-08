@@ -57,7 +57,15 @@ public class Menu {
           mostrarParticipantes();
           mostrarCarreras();
           break;
-
+        case 11:
+          volcarDatos(in);
+          break;
+        case 12:
+          mostrarDatosBD();
+          break;
+        case 13:
+          borrarDatosBD();
+          break;
         default:
           break;
       }
@@ -82,6 +90,9 @@ public class Menu {
     System.out.println("8. Mostrar seniors masculinos de dos equipos");
     System.out.println("9. Mostrar menor participante de un equipo");
     System.out.println("10 - Mostrar equipos, participantes y carreras");
+    System.out.println("11 - Volcar datos a base de datos");
+    System.out.println("12 - Mostrar datos de la base de datos");
+    System.out.println("13 - Borrar datos de la base de datos");
   }
 
   public static void mostrarEquipos() {
@@ -130,6 +141,7 @@ public class Menu {
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
+    System.out.println("Participante dado de alta");
   }
 
   public static void altaEquipo(Scanner in) {
@@ -148,6 +160,7 @@ public class Menu {
     } catch (Exception ex) {
       System.out.println(ex.getMessage());
     }
+    System.out.println("Equipo dado de alta");
   }
 
   public static void altaCarrera(Scanner in) {
@@ -178,6 +191,7 @@ public class Menu {
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
+    System.out.println("Carrera dada de alta");
   }
 
   public static void altaParticipanteEquipo(Scanner in) {
@@ -198,6 +212,7 @@ public class Menu {
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
+    System.out.println("Participante dado de alta en el equipo");
   }
 
   public static void altaEquipoCarrera(Scanner in) {
@@ -218,6 +233,7 @@ public class Menu {
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
+    System.out.println("Equipo dado de alta en la carrera");
   }
 
   public static void otorgarPremio(Scanner in) {
@@ -241,6 +257,7 @@ public class Menu {
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
+    System.out.println("Premio otorgado");
   }
 
   public static void mostrarParticipantesEquipo(Scanner in) {
@@ -281,4 +298,112 @@ public class Menu {
     }
     System.out.println(app.menoParticipante(equipo.get()));
   }
+
+  public static void volcarDatos(Scanner in) {
+    try{
+      BD.connectar();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return;
+    }
+    try {
+      if (!BD.tablaCreada()){
+        System.out.println("Creando tabla en la base de datos...");
+        try {
+          BD.crearTabla();
+        } catch (Exception e) {
+          System.out.println(e.getMessage());
+          return;
+        }
+      }
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return;
+    }
+    System.out.println("La tabla ya existe, de que carrera quieres guardar datos (nombre,equipo con mas puntos,participantes,fecha)?");
+    String nombreCarrera = in.nextLine();
+    Optional<Carrera> carrera = app.getCarrera(nombreCarrera);
+    if (carrera.isEmpty()) {
+      System.out.println("La carrera no existe");
+      return;
+    }
+    try {
+      BD.guardarDatos(carrera.get(),app);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return;
+    
+    }
+    System.out.println("Datos guardados correctamente");
+    try{
+      BD.cerrar();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public static void mostrarDatosBD() {
+    try{
+      BD.connectar();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return;
+    }
+    try {
+      if (!BD.tablaCreada()){
+        System.out.println("Creando tabla en la base de datos...");
+        try {
+          BD.crearTabla();
+        } catch (Exception e) {
+          System.out.println(e.getMessage());
+          return;
+        }
+      }
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return;
+    }
+    try {
+      System.out.println(BD.mostrarDatos());
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return;
+    }
+    try{
+      BD.cerrar();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public static void borrarDatosBD() {
+    try{
+      BD.connectar();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return;
+    }
+    try {
+      if (!BD.tablaCreada()){
+        System.out.println("La tabla no existe");
+        return;
+      }
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return;
+    }
+    try {
+      BD.borrarTabla();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return;
+    }
+    System.out.println("Datos borrados correctamente");
+    try{
+      BD.cerrar();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
 }

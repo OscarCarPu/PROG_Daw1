@@ -32,7 +32,7 @@ public class Participante {
       return "Juvenil";
     if (edad < 31)
       return "Senior";
-    return null;
+    return "Ninguna";
   }
 
   @Override
