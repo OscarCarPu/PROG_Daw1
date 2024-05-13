@@ -41,29 +41,32 @@ public class Menu {
           altaEquipoCarrera(in);
           break;
         case 6:
-          otorgarPremio(in);
+          bajaEquipoCarrera(in);
           break;
         case 7:
-          mostrarParticipantesEquipo(in);
+          otorgarPremio(in);
           break;
         case 8:
-          mostrarSeniorsMasculinos(in);
+          mostrarParticipantesEquipo(in);
           break;
         case 9:
-          mostrarMenorParticipante(in);
+          mostrarSeniorsMasculinos(in);
           break;
         case 10:
+          mostrarMenorParticipante(in);
+          break;
+        case 11:
           mostrarEquipos();
           mostrarParticipantes();
           mostrarCarreras();
           break;
-        case 11:
+        case 12:
           volcarDatos(in);
           break;
-        case 12:
+        case 13:
           mostrarDatosBD();
           break;
-        case 13:
+        case 14:
           borrarDatosBD();
           break;
         default:
@@ -85,14 +88,15 @@ public class Menu {
     System.out.println("3. Alta carrera");
     System.out.println("4. Alta participante en equipo");
     System.out.println("5. Alta equipo en carrera");
-    System.out.println("6. Otorgar premio");
-    System.out.println("7. Mostrar paricipantes de un equipo");
-    System.out.println("8. Mostrar seniors masculinos de dos equipos");
-    System.out.println("9. Mostrar menor participante de un equipo");
-    System.out.println("10 - Mostrar equipos, participantes y carreras");
-    System.out.println("11 - Volcar datos a base de datos");
-    System.out.println("12 - Mostrar datos de la base de datos");
-    System.out.println("13 - Borrar datos de la base de datos");
+    System.out.println("6. Baja equipo de carrera");
+    System.out.println("7. Otorgar premio");
+    System.out.println("8. Mostrar paricipantes de un equipo");
+    System.out.println("9. Mostrar seniors masculinos de dos equipos");
+    System.out.println("10. Mostrar menor participante de un equipo");
+    System.out.println("11. Mostrar equipos, participantes y carreras");
+    System.out.println("12. Volcar datos a base de datos");
+    System.out.println("13. Mostrar datos de la base de datos");
+    System.out.println("14. Borrar datos de la base de datos");
   }
 
   public static void mostrarEquipos() {
@@ -140,6 +144,7 @@ public class Menu {
       app.altaParticipante(p);
     } catch (Exception e) {
       System.out.println(e.getMessage());
+      return;
     }
     System.out.println("Participante dado de alta");
   }
@@ -159,6 +164,7 @@ public class Menu {
       app.altaEquipo(e);
     } catch (Exception ex) {
       System.out.println(ex.getMessage());
+      return;
     }
     System.out.println("Equipo dado de alta");
   }
@@ -190,6 +196,7 @@ public class Menu {
       app.altaCarrera(c);
     } catch (Exception e) {
       System.out.println(e.getMessage());
+      return;
     }
     System.out.println("Carrera dada de alta");
   }
@@ -211,8 +218,31 @@ public class Menu {
       app.altaParticipanteEquipo(participante.get(), equipo.get());
     } catch (Exception e) {
       System.out.println(e.getMessage());
+      return;
     }
     System.out.println("Participante dado de alta en el equipo");
+  }
+
+  public static void bajaEquipoCarrera(Scanner in) {
+    mostrarEquipos();
+    mostrarCarreras();
+    System.out.println("Introduce el nombre del equipo:");
+    String nombreEquipo = in.nextLine();
+    System.out.println("Introduce el nombre de la carrera:");
+    String nombreCarrera = in.nextLine();
+    Optional<Equipo> equipo = app.getEquipo(nombreEquipo);
+    Optional<Carrera> carrera = app.getCarrera(nombreCarrera);
+    if (equipo.isEmpty() || carrera.isEmpty() || carrera.get().hasEquipo(equipo.get())){
+      System.out.println("El equipo o la carrera no existen o el equipo no esta inscrito en la carrera.");
+      return;
+    }
+    try {
+      app.bajaEquipoCarrera(equipo.get(),carrera.get());
+    } catch (Exception e){
+      System.out.println(e.getMessage());
+      return;
+    }
+    System.out.println("Equipo dado de baja de la carrera.");
   }
 
   public static void altaEquipoCarrera(Scanner in) {
@@ -232,6 +262,7 @@ public class Menu {
       app.altaEquipoCarrera(equipo.get(), carrera.get());
     } catch (Exception e) {
       System.out.println(e.getMessage());
+      return;
     }
     System.out.println("Equipo dado de alta en la carrera");
   }
@@ -256,6 +287,7 @@ public class Menu {
       app.otorgarPremio(equipo.get(), carrera.get(), posicion);
     } catch (Exception e) {
       System.out.println(e.getMessage());
+      return;
     }
     System.out.println("Premio otorgado");
   }
@@ -405,5 +437,6 @@ public class Menu {
       System.out.println(e.getMessage());
     }
   }
+
 
 }
