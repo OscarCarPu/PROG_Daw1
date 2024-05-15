@@ -58,4 +58,9 @@ public class Direccion implements Serializable{
     if (personal == null) throw new IllegalArgumentException("personal cannot be null");
     this.personal = personal;
   }
+
+  @Override
+  public String toString() {
+    return calle+", "+num+", "+cp+", "+ciudad+", "+(personal==1?"Personal":"No personal");
+  }
 }

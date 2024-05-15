@@ -3,6 +3,7 @@ package agenda;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Grupo implements Serializable{
   
@@ -45,5 +46,12 @@ public class Grupo implements Serializable{
     if (getClass() != obj.getClass()) return false;
     Grupo other = (Grupo) obj;
     return nombre.equals(other.nombre);
+  }
+
+  @Override
+  public String toString() {
+    return "Nombre: " + nombre + "\n"
+      + "Contactos: " + contactos.stream().map(a -> a.getNombre()).collect(Collectors.joining(", ")) + "\n" 
+      + "------------------------------------";
   }
 }
